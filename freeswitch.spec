@@ -40,6 +40,8 @@
 %define build_mod_shout 1
 %define build_mod_opusfile 0
 %define build_mod_v8 0
+%define build_mod_kazoo 0
+%define build_mod_mariadb 0
 
 %{?with_sang_tc:%define build_sng_tc 1 }
 %{?with_sang_isdn:%define build_sng_isdn 1 }
@@ -831,6 +833,7 @@ Theora Video Codec support for FreeSWITCH open source telephony platform.
 #				FreeSWITCH Database Modules
 ######################################################################################################################
 
+%if %{build_mod_mariadb}
 %package database-mariadb
 Summary:	MariaDB native support for FreeSWITCH
 Group:		System/Libraries
@@ -840,6 +843,7 @@ BuildRequires:	mariadb-connector-c-devel
 
 %description database-mariadb
 MariaDB native support for FreeSWITCH.
+%endif
 
 %package database-pgsql
 Summary:	PostgreSQL native support for FreeSWITCH
@@ -996,6 +1000,7 @@ Requires:        %{name} = %{version}-%{release}
 %description event-format-cdr
 JSON and XML Logger for the FreeSWITCH open source telephony platform
 
+%if %{build_mod_kazoo}
 %package kazoo
 Summary:	Kazoo Module for the FreeSWITCH open source telephony platform
 Group:		System/Libraries
@@ -1005,6 +1010,7 @@ BuildRequires:	erlang
 
 %description kazoo
 Kazoo Module for FreeSWITCH.
+%endif
 
 %package event-multicast
 Summary:	Multicast Event System for the FreeSWITCH open source telephony platform
@@ -1496,7 +1502,11 @@ CODECS_MODULES+="codecs/mod_sangoma_codec"
 #					Database Modules
 #
 ######################################################################################################################
-DATABASES_MODULES="databases/mod_mariadb databases/mod_pgsql"
+DATABASES_MODULES="databases/mod_pgsql"
+
+%if %{build_mod_mariadb}
+DATABASES_MODULES+=" databases/mod_mariadb"
+%endif
 
 ######################################################################################################################
 #
@@ -1530,10 +1540,14 @@ ENDPOINTS_MODULES="endpoints/mod_dingaling \
 ######################################################################################################################
 EVENT_HANDLERS_MODULES="event_handlers/mod_cdr_csv event_handlers/mod_cdr_pg_csv event_handlers/mod_cdr_sqlite \
 			event_handlers/mod_cdr_mongodb event_handlers/mod_format_cdr event_handlers/mod_erlang_event event_handlers/mod_event_multicast \
-			event_handlers/mod_event_socket event_handlers/mod_json_cdr event_handlers/mod_kazoo event_handlers/mod_radius_cdr \
+			event_handlers/mod_event_socket event_handlers/mod_json_cdr event_handlers/mod_radius_cdr \
 			event_handlers/mod_snmp"
 %if %{build_mod_rayo}
 EVENT_HANDLERS_MODULES+=" event_handlers/mod_rayo"
+%endif
+
+%if %{build_mod_kazoo}
+EVENT_HANDLERS_MODULES+=" event_handlers/mod_kazoo"
 %endif
 
 #### BUILD ISSUES NET RESOLVED FOR RELEASE event_handlers/mod_event_zmq 
@@ -1662,6 +1676,7 @@ autoreconf --force --install
 --with-odbc \
 --with-erlang \
 --with-openssl \
+--with-no-assertions \
 %{?configure_options}
 
 unset MODULES
@@ -2253,8 +2268,10 @@ fi
 #
 ######################################################################################################################
 
+%if %{build_mod_mariadb}
 %files database-mariadb
 %{MODINSTDIR}/mod_mariadb.so*
+%endif
 
 %files database-pgsql
 %{MODINSTDIR}/mod_pgsql.so*
@@ -2332,8 +2349,10 @@ fi
 %files event-json-cdr
 %{MODINSTDIR}/mod_json_cdr.so*
 
+%if %{build_mod_kazoo}
 %files kazoo
 %{MODINSTDIR}/mod_kazoo.so*
+%endif
 
 %files event-radius-cdr
 %{MODINSTDIR}/mod_radius_cdr.so*
