@@ -33,7 +33,7 @@
 %define build_sng_ss7 0
 %define build_sng_tc 0
 %define build_py26_esl 0
-%define build_timerfd 0
+%define build_timerfd 1
 %define build_mod_esl 0
 %define build_mod_rayo 1
 %define build_mod_ssml 1
@@ -955,6 +955,14 @@ Verto protocol support for FreeSWITCH open source telephony platform.
 #				FreeSWITCH Event Handler Modules
 ######################################################################################################################
 
+%package event-amqp
+Summary:	AMQP Event Logger for the FreeSWITCH open source telephony platform
+Group:		System/Libraries
+Requires:	 %{name} = %{version}-%{release}
+
+%description event-amqp
+AMQP Event Logger for FreeSWITCH
+
 %package event-cdr-mongodb
 Summary:	MongoDB CDR Logger for the FreeSWITCH open source telephony platform
 Group:		System/Libraries
@@ -1541,7 +1549,7 @@ ENDPOINTS_MODULES="endpoints/mod_dingaling \
 EVENT_HANDLERS_MODULES="event_handlers/mod_cdr_csv event_handlers/mod_cdr_pg_csv event_handlers/mod_cdr_sqlite \
 			event_handlers/mod_cdr_mongodb event_handlers/mod_format_cdr event_handlers/mod_erlang_event event_handlers/mod_event_multicast \
 			event_handlers/mod_event_socket event_handlers/mod_json_cdr event_handlers/mod_radius_cdr \
-			event_handlers/mod_snmp"
+			event_handlers/mod_snmp event_handlers/mod_amqp"
 %if %{build_mod_rayo}
 EVENT_HANDLERS_MODULES+=" event_handlers/mod_rayo"
 %endif
@@ -2324,6 +2332,9 @@ fi
 #					Event Modules
 #
 ######################################################################################################################
+
+%files event-amqp
+%{MODINSTDIR}/mod_amqp.so*
 
 %files event-cdr-mongodb
 %{MODINSTDIR}/mod_cdr_mongodb.so*
