@@ -36,7 +36,7 @@
 %define build_timerfd 1
 %define build_mod_esl 0
 %define build_mod_rayo 1
-%define build_mod_newrelic 0
+%define build_mod_newrelic 1
 %define build_mod_ssml 1
 %define build_mod_shout 1
 %define build_mod_opusfile 0
