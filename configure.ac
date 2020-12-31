@@ -1376,6 +1376,13 @@ AC_CHECK_LIB([mp3lame], [lame_init],[
     AC_SUBST([MP3LAME_CFLAGS], [$CPPFLAGS])])])
 AM_CONDITIONAL([HAVE_MP3LAME],[$mp3lame])
 
+AC_CHECK_LIB([newrelic], [newrelic_create_app],
+  AM_CONDITIONAL([HAVE_NEWRELIC],[true]),
+  AM_CONDITIONAL([HAVE_NEWRELIC],[false]), [-lm])
+
+NEWRELIC_LIBS="-lnewrelic"
+AC_SUBST(NEWRELIC_LIBS)
+
 PKG_CHECK_MODULES([AVCODEC], [libavcodec >= 53.35.0],[
   AM_CONDITIONAL([HAVE_AVCODEC],[true])],[
   AC_MSG_RESULT([no]); AM_CONDITIONAL([HAVE_AVCODEC],[false])])
@@ -1824,6 +1831,8 @@ else
 	AC_MSG_WARN([python support disabled, building mod_python will fail!])
 fi
 
+
+
 #
 # SNMP checks for mod_snmp
 #
@@ -1990,6 +1999,7 @@ AC_CONFIG_FILES([Makefile
 		src/mod/event_handlers/mod_fail2ban/Makefile
 		src/mod/event_handlers/mod_format_cdr/Makefile
 		src/mod/event_handlers/mod_json_cdr/Makefile
+    src/mod/event_handlers/mod_newrelic/Makefile
 		src/mod/event_handlers/mod_kazoo/Makefile
 		src/mod/event_handlers/mod_radius_cdr/Makefile
 		src/mod/event_handlers/mod_odbc_cdr/Makefile
