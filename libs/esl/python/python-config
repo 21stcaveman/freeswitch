@@ -10,7 +10,11 @@ valid_opts = ['prefix', 'exec-prefix', 'includes', 'libs', 'cflags',
               'ldflags', 'help']
 
 def exit_with_usage(code=1):
-    print("Usage: %s [%s]" % (sys.argv[0], '|'.join('--'+opt for opt in valid_opts)), file=sys.stderr)
+	if sys.version_info >= (3, 0):
+		print ("Usage: %s [%s]" % (sys.argv[0], '|'.join('--'+opt for opt in valid_opts)), file=sys.stderr)
+	else:
+		print >>sys.stderr, "Usage: %s [%s]" % (sys.argv[0], '|'.join('--'+opt for opt in valid_opts))
+
     sys.exit(code)
 
 try:
@@ -23,7 +27,10 @@ if not opts:
 
 opt = opts[0][0]
 
-pyver = sysconfig.get_config_var('VERSION')
+pyver = sysconfig.get_config_var('LDVERSION')
+if pyver == None:
+	pyver = sysconfig.get_config_var('VERSION')
+
 getvar = sysconfig.get_config_var
 
 if opt == '--help':
